@@ -1,6 +1,7 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-#@author Mosab Ahmad <mosab.ahmad@gmail.com>
+__authors__ = (
+	"Mosab Ahmad <mosab.ahmad@gmail.com>",
+	"Colin von Heuring <colin@von.heuri.ng>",
+)
 
 import requests
 
@@ -13,19 +14,22 @@ class TogglAPI(object):
 
 	def __init__(self, api_token, timezone):
 		self.api_token = api_token
-		self.timezone  = timezone
+		self.timezone = timezone
 
 	def _make_url(self, section='time_entries', params={}):
-		"""Constructs and returns an api url to call with the section of the API to be called
-		and parameters defined by key/pair values in the paramas dict.
-		Default section is "time_entries" which evaluates to "time_entries.json"
+		"""
+		Constructs and returns an api url to call with the section of the API
+		to be called and parameters defined by key/pair values in the params
+		dict.  Default section is "time_entries" which evaluates to
+		"time_entries.json"
 
 		>>> t = TogglAPI('_SECRET_TOGGLE_API_TOKEN_')
 		>>> t._make_url(section='time_entries', params = {})
 		'https://www.toggl.com/api/v8/time_entries'
 
 		>>> t = TogglAPI('_SECRET_TOGGLE_API_TOKEN_')
-		>>> t._make_url(section='time_entries', params = {'start_date' : '2010-02-05T15:42:46+02:00', 'end_date' : '2010-02-12T15:42:46+02:00'})
+		>>> params = {'start_date': '2010-02-05T15:42:46+02:00', 'end_date': '2010-02-12T15:42:46+02:00'}
+		>>> t._make_url(section='time_entries', params=params)
 		'https://www.toggl.com/api/v8/time_entries?start_date=2010-02-05T15%3A42%3A46%2B02%3A00%2B02%3A00&end_date=2010-02-12T15%3A42%3A46%2B02%3A00%2B02%3A00'
 		"""
 
@@ -40,29 +44,44 @@ class TogglAPI(object):
 		url = url
 		headers = {'content-type': 'application/json'}
 
+		auth = HTTPBasicAuth(self.api_token, 'api_token')
 		if method == 'GET':
-			return requests.get(url, headers=headers, auth=HTTPBasicAuth(self.api_token, 'api_token'))
+			return requests.get(url, headers=headers, auth=auth)
 		elif method == 'POST':
-			return requests.post(url, headers=headers, auth=HTTPBasicAuth(self.api_token, 'api_token'))
+			return requests.post(url, headers=headers, auth=auth)
 		else:
 			raise ValueError('Undefined HTTP method "{}"'.format(method))
 
-	## Time Entry functions
-	def get_time_entries(self, start_date='', end_date='', timezone=''):
+	# # Time Entry functions # #
+	def get_time_entries(self, start_date='', end_date=''):
 		"""Get Time Entries JSON object from Toggl"""
+		start_date = start_date.isoformat() + self.timezone
+		end_date = end_date.isoformat() + self.timezone
 
-		url = self._make_url(section='time_entries', params={'start_date': start_date+self.timezone, 'end_date': end_date+self.timezone})
+		url = self._make_url(
+			section='time_entries',
+			params={'start_date': start_date, 'end_date': end_date},
+		)
 		r = self._query(url=url, method='GET')
-		return r.json()
+		try:
+			return r.json()
+		except ValueError:
+			return r.text
 
-	def get_hours_tracked(self, start_date, end_date):
-		"""Count the total tracked hours excluding any RUNNING real time tracked time entries"""
-		time_entries = self.get_time_entries(start_date=start_date.isoformat(), end_date=end_date.isoformat())
+	def get_hours_tracked(self, **kwargs):
+		"""
+		Count the total tracked hours excluding any RUNNING real time tracked
+		time entries
+		"""
+		time_entries = self.get_time_entries(**kwargs)
 
 		if time_entries is None:
 			return 0
 
-		total_seconds_tracked = sum(max(entry['duration'], 0) for entry in time_entries)
+		total_seconds_tracked = sum(
+			max(entry['duration'], 0)
+			for entry in time_entries
+		)
 
 		return (total_seconds_tracked / 60.0) / 60.0
 
