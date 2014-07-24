@@ -1,3 +1,9 @@
+"""
+Connect to the Toggl API.
+"""
+
+from version import __version__
+
 __authors__ = (
 	"Mosab Ahmad <mosab.ahmad@gmail.com>",
 	"Colin von Heuring <colin@von.heuri.ng>",
@@ -9,8 +15,8 @@ from urllib import urlencode
 from requests.auth import HTTPBasicAuth
 
 
-class TogglAPI(object):
-	"""A wrapper for Toggl Api"""
+class Api(object):
+	"""A wrapper for Toggl API"""
 
 	def __init__(self, api_token, timezone):
 		self.api_token = api_token
@@ -23,11 +29,11 @@ class TogglAPI(object):
 		dict.  Default section is "time_entries" which evaluates to
 		"time_entries.json"
 
-		>>> t = TogglAPI('_SECRET_TOGGLE_API_TOKEN_')
+		>>> t = toggl.Api('_SECRET_TOGGLE_API_TOKEN_')
 		>>> t._make_url(section='time_entries', params = {})
 		'https://www.toggl.com/api/v8/time_entries'
 
-		>>> t = TogglAPI('_SECRET_TOGGLE_API_TOKEN_')
+		>>> t = toggl.Api('_SECRET_TOGGLE_API_TOKEN_')
 		>>> params = {'start_date': '2010-02-05T15:42:46+02:00', 'end_date': '2010-02-12T15:42:46+02:00'}
 		>>> t._make_url(section='time_entries', params=params)
 		'https://www.toggl.com/api/v8/time_entries?start_date=2010-02-05T15%3A42%3A46%2B02%3A00%2B02%3A00&end_date=2010-02-12T15%3A42%3A46%2B02%3A00%2B02%3A00'
