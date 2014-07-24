@@ -7,4 +7,4 @@ Connect to the Toggl API.
 # import.  In such a case, consider creating a set-version script to handle
 # version updates.
 
-__version__ = '0.0.1'
+__version__ = '0.1.0-1.dev'
