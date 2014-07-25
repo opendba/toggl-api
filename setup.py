@@ -11,6 +11,6 @@ setup(
 	author_email='colin@von.heuri.ng',
 	url='http://www.github.com/divitu/toggl-api/',
 	py_modules=['toggl'],
-	install_requires=['requests', 'python-dateutil']
-	# scripts=['bin/foo']
+	install_requires=['requests', 'python-dateutil'],
+	# scripts=['bin/foo'],
 )
