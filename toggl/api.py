@@ -78,12 +78,9 @@ class TogglAPI(object):
 		if time_entries is None:
 			return 0
 
-		total_seconds_tracked = sum(
-			max(entry['duration'], 0)
-			for entry in time_entries
-		)
+		total_seconds_tracked = sum(entry['duration'] for entry in time_entries)
 
-		return (total_seconds_tracked / 60.0) / 60.0
+		return total_seconds_tracked / 60.0 / 60.0
 
 
 if __name__ == '__main__':
