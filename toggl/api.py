@@ -3,18 +3,18 @@ __authors__ = (
 	"Colin von Heuring <colin@von.heuri.ng>",
 )
 
-import requests
-
 from urllib import urlencode
+
+import requests
 from requests.auth import HTTPBasicAuth
 
 
 class TogglAPI(object):
 	"""A wrapper for Toggl Api"""
 
-	def __init__(self, api_token, timezone):
+	def __init__(self, api_token):
 		self.api_token = api_token
-		self.timezone = timezone
+		# self.timezone = timezone
 
 	def _make_url(self, section='time_entries', params={}):
 		"""
@@ -50,13 +50,11 @@ class TogglAPI(object):
 		elif method == 'POST':
 			return requests.post(url, headers=headers, auth=auth)
 		else:
-			raise ValueError('Undefined HTTP method "{}"'.format(method))
+			raise ValueError('Unimplemented HTTP method "{}"'.format(method))
 
-	# # Time Entry functions # #
 	def get_time_entries(self, start_date='', end_date=''):
-		"""Get Time Entries JSON object from Toggl"""
-		start_date = start_date.isoformat() + self.timezone
-		end_date = end_date.isoformat() + self.timezone
+		start_date = start_date.isoformat()
+		end_date = end_date.isoformat()
 
 		url = self._make_url(
 			section='time_entries',
@@ -66,7 +64,7 @@ class TogglAPI(object):
 		try:
 			return r.json()
 		except ValueError:
-			return r.text
+			raise ValueError(r.text)
 
 	def get_hours_tracked(self, **kwargs):
 		"""

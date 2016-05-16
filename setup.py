@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-from toggl.__init__ import __version__ as ver
+from version import VERSION
 
 setup(
 	name='TogglAPI',
-	version=ver,
+	version=VERSION,
 	description='API library for toggl.com',
 	author='Colin von Heuring',
 	author_email='colin@von.heuri.ng',
 	url='http://www.github.com/divitu/toggl-api/',
 	packages=['toggl'],
 	package_dir={'toggl': 'toggl'},
-	install_requires=['requests', 'dateparser', 'tabulate'],
-	# scripts=['bin/foo'],
+	install_requires=['requests', 'python-dateutil', 'dateparser', 'tabulate'],
+	scripts=['bin/toggl-report'],
 )
