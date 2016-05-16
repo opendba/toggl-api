@@ -41,6 +41,12 @@ class DateRange(object):
 			self.dates = "{:%Y-%m-%d} - {:%Y-%m-%d}".format(self.start,
 			                                                self.end - timedelta(days=1))
 
+	def decrement_day(self):
+		if self.one_day:
+			self.start -= timedelta(days=1)
+			self.end -= timedelta(days=1)
+			self.dates = "{:%Y-%m-%d}".format(self.start)
+
 	@staticmethod
 	def first_of_week(date, offset):
 		if offset is None:
