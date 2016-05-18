@@ -6,7 +6,8 @@ import argparse
 
 from tabulate import tabulate
 
-from toggl import TogglAPI, DateRange, process_entries
+from toggl import TogglAPI, DateRange
+from toggl.report import process_entries
 
 def main(argv=None):
 	parser = argparse.ArgumentParser("Toggl time reporter")

@@ -60,7 +60,8 @@ class DateRange(object):
 		date -= timedelta(days=days)
 		return date
 
-	def parse_date(self, date):
+	@staticmethod
+	def parse_date(date):
 		now = datetime.now(dateutil.tz.tzlocal())
 		settings = {'TIMEZONE': now.tzname(), 'RETURN_AS_TIMEZONE_AWARE': True}
 		result = dateparser.parse(date, settings=settings)
