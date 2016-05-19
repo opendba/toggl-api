@@ -3,23 +3,26 @@
 from __future__ import print_function
 
 import argparse
+import os.path
 
 from tabulate import tabulate
 
 from toggl import TogglAPI, DateRange
 from toggl.report import process_entries
 
+KEY_FILE = os.path.expanduser('~/.toggl/api_key')
+
 def main(argv=None):
+	with open(KEY_FILE) as fh:
+		api_key = fh.read().rstrip()
+
+	toggl = TogglAPI(api_key)
+
 	parser = argparse.ArgumentParser("Toggl time reporter")
 	parser.add_argument("start", nargs='?')
 	parser.add_argument("end", nargs='?')
 	parser.add_argument("-c", "--csv", action='store_true')
-	parser.add_argument("-k", "--key-file", default='api_key')
 	args = parser.parse_args(argv)
-	with open(args.key_file) as fh:
-		api_key = fh.read().rstrip()
-
-	toggl = TogglAPI(api_key)
 
 	try:
 		dr = DateRange(args.start, args.end)
