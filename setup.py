@@ -4,7 +4,7 @@ from setuptools import setup
 from version import VERSION
 
 setup(
-	name='TogglAPI',
+	name='toggl-api',
 	version=VERSION,
 	description='API library for toggl.com',
 	author='Colin von Heuring',
