@@ -34,6 +34,16 @@ class DateRange(object):
 		self.start = start
 		self.end = end + timedelta(days=1)
 
+	def days(self):
+		if self.one_day:
+			yield self.tuple()
+		else:
+			curr = self.start
+			while curr < self.end:
+				next = curr + timedelta(days=1)
+				yield curr, next
+				curr = next
+
 	def decrement_week(self):
 		if self.week:
 			self.start -= timedelta(weeks=1)
