@@ -3,7 +3,11 @@ __authors__ = (
 	"Colin von Heuring <colin@von.heuri.ng>",
 )
 
-from urllib import urlencode
+# if unable to import urlencode from urllib, then we are most probably on python 3
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -80,6 +84,31 @@ class TogglAPI(object):
 
 		return total_seconds_tracked / 60.0 / 60.0
 
+	def _post(self, url, data):
+		headers = {'content-type': 'application/json'}
+		auth = HTTPBasicAuth(self.api_token, 'api_token')
+		return requests.post(url, headers=headers, auth=auth, json=data)
+
+	def make_time_entry(self, description, duration, start, pid, billable, created_with="toggle-api"):
+		url = self._make_url('time_entries')
+		params = {"time_entry": {
+			"description": description,
+			"duration": duration,
+			"start": start.isoformat(),
+			"pid": pid,
+			"billable": billable,
+			"created_with": created_with
+			}
+		}
+
+		r = self._post(url, params)
+		if r.status_code != 200:
+			raise ValueError("Status code is not 200: {0}".format(r.status_code))
+
+		try:
+			return r.json()
+		except ValueError:
+			raise ValueError(r.text)
 
 if __name__ == '__main__':
 	import doctest
